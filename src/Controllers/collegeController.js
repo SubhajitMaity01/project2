@@ -30,25 +30,15 @@ const createCollege = async function (req, res) {
     const nameAlreadyUsed= await  collegeModel.findOne({name});
 
     if(nameAlreadyUsed){
-    res.status(400).send({status:false, message:`${name} this name is already registered`})
-    return
+    return res.status(400).send({status:false, message:`${name} this name is already registered`})
+    
     }
 
-    if (!isValid(!fullName)) {
-      return res
-        .status(400)
-        .send({
-          status: false,
-          msg: "BAD REQUEST please provided valid fullName",
-        });
+    if (!isValid(fullName)) {
+      return res.status(400).send({status: false, msg: "BAD REQUEST please provided valid fullName"});
     }
     if (!isValid(logoLink)) {
-      return res
-        .status(400)
-        .send({
-          status: false,
-          msg: "BAD REQUEST please provided valid logoLink",
-        });
+      return res.status(400).send({status: false,msg: "BAD REQUEST please provided valid logoLink"});
     }
 
     let collegeCreated = await collegeModel.create(college);

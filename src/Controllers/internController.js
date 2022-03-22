@@ -35,21 +35,21 @@ const isValid = function(value){
         
 
              ///email validation start
-            if(!isValid(mobile)){
-            return res.status(400).send({status: false, msg: 'BAD request plz provide valid mobile'})
+            if(!isValid(email)){
+            return res.status(400).send({status: false, msg: 'BAD request plz provide valid emailId'})
         }
           
         if(!(/^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/.test(email))) {
-          res.status(400).send({status:false, message:'email should be a valid email address'})
-          return
+         return res.status(400).send({status:false, message:'email should be a valid email address'})
+        
         } 
         
         
         const isEmailAlreadyUsed= await  internModel.findOne({email});
 
         if(isEmailAlreadyUsed){
-        res.status(400).send({status:false, message:`${email} email is already registered`})
-        return
+        return res.status(400).send({status:false, message:`${email} email is already registered`})
+        
           }
             ///email validation end
 
@@ -57,16 +57,19 @@ const isValid = function(value){
 
         /// validation mobile
         const isMobileAlreadyUsed= await  internModel.findOne({mobile});
+        if(!mobile){
+          return res.status(400).send({status:false,message:"mobile number is required"})
+        }
 
         if(isMobileAlreadyUsed){
-        res.status(400).send({status:false, message:`${mobile} mobile is already registered`})
-        return
+        return res.status(400).send({status:false, message:`${mobile} mobile is already registered`})
+        
         }
 
         
       if (/^[1-9]{1}[0-9]{9}$/.test(mobile) == false) {
           console.log("Please enter valid mobile number.");
-          return res.status(400).send({status:false, msg:"BAD REQUEST please provided valid mobile which contain only numbers"})
+          return res.status(400).send({status:false, msg:"BAD REQUEST please provided valid mobile which contain only ten numbers"})
         
       }
 
@@ -76,7 +79,7 @@ const isValid = function(value){
         }
           ///mobile validation end
 
-            req.body.collegeId=college[0]._id
+           req.body.collegeId=college[0]._id
             delete req.body["collegeName"]
 
          let internCreated = await internModel.create(data)
@@ -104,25 +107,26 @@ const getInternCollegeDetails = async function(req,res){
     }
            const collegeId= college[0]._id
 
-      //       const internName =await internModel.find({collegeId:collegeId, isDeleted:false})
+            /*const internName =await internModel.find({collegeId:collegeId, isDeleted:false})
 
-      //       const interns=[];
-      //       for(let i=0;i<internName.length;i++){
-      //         let object ={}
-      //         object._id =internName[i]._id
-      //         object.name=internName[i].name
-      //         object.email= internName[i].email
-      //         object.mobile= internName[i].mobile
-      //         interns.push(object)
-      //       }
+            const interns=[];
+            for(let i=0;i<internName.length;i++){
+              let object ={}
+              object._id =internName[i]._id
+               object.name=internName[i].name
+              object.email= internName[i].email
+               object.mobile= internName[i].mobile
+               interns.push(object)
+             }
 
-      //       const ObjectData ={name:college[0].name,
-      //       fullName:college[0].fullName,
-      //     logoLink:college[0].logoLink,
-      //   interns:interns
-      // }
+             const ObjectData ={
+               name:college[0].name,
+               fullName:college[0].fullName,
+               logoLink:college[0].logoLink,
+               interns:interns
+       }*/
 
-      let interns = await internModel.find({ collegeId: collegeId }).select({ name: 1, email: 1, mobile: 1, _id: 1 });
+    let interns = await internModel.find({collegeId : collegeId }).select({ name: 1, email: 1, mobile: 1, _id: 1 });
     let result = await collegeModel.find({ name: collegeName }).select({ name: 1, fullName: 1, logoLink: 1, _id: 0 });
 
     const object = {
